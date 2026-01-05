@@ -406,7 +406,9 @@ If you encounter issues not covered here:
 2. Enable debug mode: Set `APP_DEBUG=true` in `.env`
 3. Review error messages in API responses
 4. See comprehensive documentation:
-   - [api-documentation.json](api-documentation.json) - OpenAPI specification
+   - [api-documentation.json](api-documentation.json) - In project documentation
+   - [https://documenter.getpostman.com/view/9486037/2sBXVcmYpf](Postman-collection) - Postman documentation
+
 
 ## 📊 Project Status
 
