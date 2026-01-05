@@ -79,7 +79,7 @@ Before you begin, ensure you have the following installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone <https://github.com/charlesbusiness/dentalfrontier.git>
 cd assigment
 ```
 
@@ -406,8 +406,6 @@ If you encounter issues not covered here:
 2. Enable debug mode: Set `APP_DEBUG=true` in `.env`
 3. Review error messages in API responses
 4. See comprehensive documentation:
-   - [FINAL_TEST_SUMMARY.md](FINAL_TEST_SUMMARY.md) - Test status and PHP bug analysis
-   - [REFACTORING_ASSESSMENT.md](REFACTORING_ASSESSMENT.md) - Architecture details
    - [api-documentation.json](api-documentation.json) - OpenAPI specification
 
 ## 📊 Project Status
@@ -424,14 +422,6 @@ If you encounter issues not covered here:
 **Test Results:**
 - **PHP 8.3+:** All 59/59 tests passing ✅
 - **PHP 8.2:** Unit tests pass (36/36), Feature tests segfault ⚠️
-
-See [FINAL_TEST_SUMMARY.md](FINAL_TEST_SUMMARY.md) for detailed test results and production readiness assessment.
-
-## 📄 License
-
-This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-
-## 👤 Author
 
 Created as part of the Laravel E-Commerce Wishlist Feature assignment.
 
