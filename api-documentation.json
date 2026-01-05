@@ -1,0 +1,1010 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Laravel E-Commerce Wishlist API",
+    "description": "A RESTful API for managing user wishlists in an e-commerce platform. Built with Laravel 11.x, this API provides authentication, product management, and wishlist functionality.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "API Support",
+      "email": "support@example.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000/api",
+      "description": "Local Development Server"
+    },
+    {
+      "url": "https://api.example.com/api",
+      "description": "Production Server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "User registration, login, and authentication endpoints"
+    },
+    {
+      "name": "Products",
+      "description": "Product catalog and management endpoints"
+    },
+    {
+      "name": "Wishlist",
+      "description": "User wishlist management endpoints (requires authentication)"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Register a new user",
+        "description": "Create a new user account with email and password",
+        "operationId": "registerUser",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "email", "password", "password_confirmation"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "John Doe",
+                    "description": "User's full name"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "maxLength": 255,
+                    "example": "john@example.com",
+                    "description": "User's email address (must be unique)"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "minLength": 8,
+                    "example": "password123",
+                    "description": "User's password (minimum 8 characters)"
+                  },
+                  "password_confirmation": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "password123",
+                    "description": "Password confirmation (must match password)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User registered successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "John Doe"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "john@example.com"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-01-01T00:00:00.000000Z"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-01-01T00:00:00.000000Z"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Login user",
+        "description": "Authenticate user and receive access token",
+        "operationId": "loginUser",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "john@example.com",
+                    "description": "User's email address"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "password123",
+                    "description": "User's password"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Login successful"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "John Doe"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "john@example.com"
+                        },
+                        "token": {
+                          "type": "string",
+                          "example": "1|abc123xyz789...",
+                          "description": "Bearer token for API authentication"
+                        },
+                        "token_type": {
+                          "type": "string",
+                          "example": "Bearer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "The provided credentials are incorrect."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/products/": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get all products",
+        "description": "Retrieve a list of all available products with optional filtering and pagination",
+        "operationId": "getAllProducts",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Filter products by name (partial match)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 255,
+              "example": "laptop"
+            }
+          },
+          {
+            "name": "min_price",
+            "in": "query",
+            "description": "Filter products with minimum price",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "decimal",
+              "minimum": 0,
+              "example": 50.00
+            }
+          },
+          {
+            "name": "max_price",
+            "in": "query",
+            "description": "Filter products with maximum price",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "decimal",
+              "minimum": 0,
+              "example": 500.00
+            }
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "description": "Number of items per page (enables pagination)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "example": 15
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Products retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Products retrieved successfully"
+                    },
+                    "data": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "data": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/Product"
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "data": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/Product"
+                              }
+                            },
+                            "meta_data": {
+                              "$ref": "#/components/schemas/PaginationMeta"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get a single product",
+        "description": "Retrieve detailed information about a specific product by ID",
+        "operationId": "getProduct",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Product ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Product with Id 1 retrieved successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Product"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/wishlist/": {
+      "get": {
+        "tags": ["Wishlist"],
+        "summary": "Get user's wishlist",
+        "description": "Retrieve all products in the authenticated user's wishlist",
+        "operationId": "getUserWishlist",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "perPage",
+            "in": "query",
+            "description": "Number of items per page (enables pagination)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "example": 15
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Wishlist retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Wishlists retrieved successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Product"
+                          }
+                        },
+                        "meta_data": {
+                          "$ref": "#/components/schemas/PaginationMeta"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Wishlist"],
+        "summary": "Add product to wishlist",
+        "description": "Add a product to the authenticated user's wishlist. This operation is idempotent - adding the same product twice will not create duplicates.",
+        "operationId": "addToWishlist",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["product_id"],
+                "properties": {
+                  "product_id": {
+                    "type": "integer",
+                    "example": 1,
+                    "description": "ID of the product to add to wishlist"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Product added to wishlist successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Product added to wishlist successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "wishlist_id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "product": {
+                          "$ref": "#/components/schemas/Product"
+                        },
+                        "already_existed": {
+                          "type": "boolean",
+                          "example": false,
+                          "description": "Indicates if the product was already in the wishlist"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Product already in wishlist (idempotent response)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Product is already in your wishlist"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "wishlist_id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "product": {
+                          "$ref": "#/components/schemas/Product"
+                        },
+                        "already_existed": {
+                          "type": "boolean",
+                          "example": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Wishlist"],
+        "summary": "Clear entire wishlist",
+        "description": "Remove all products from the authenticated user's wishlist",
+        "operationId": "clearWishlist",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Wishlist cleared successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Wishlist cleared successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "deleted_count": {
+                          "type": "integer",
+                          "example": 5,
+                          "description": "Number of items removed from wishlist"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/wishlist/{productId}": {
+      "delete": {
+        "tags": ["Wishlist"],
+        "summary": "Remove product from wishlist",
+        "description": "Remove a specific product from the authenticated user's wishlist. This operation is idempotent - removing a non-existent item returns success.",
+        "operationId": "removeFromWishlist",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "Product ID to remove from wishlist",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product removed from wishlist successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Product removed from wishlist successfully"
+                    },
+                    "data": {
+                      "type": "null",
+                      "example": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Product": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1,
+            "description": "Product unique identifier"
+          },
+          "name": {
+            "type": "string",
+            "example": "Laptop",
+            "description": "Product name"
+          },
+          "description": {
+            "type": "string",
+            "example": "High-performance laptop with 16GB RAM",
+            "description": "Product description"
+          },
+          "price": {
+            "type": "string",
+            "example": "999.99",
+            "description": "Product price (decimal formatted as string)"
+          },
+          "stock": {
+            "type": "integer",
+            "example": 50,
+            "description": "Available stock quantity"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-01-01T00:00:00.000000Z",
+            "description": "Product creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-01-01T00:00:00.000000Z",
+            "description": "Product last update timestamp"
+          }
+        }
+      },
+      "PaginationMeta": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "example": 100,
+            "description": "Total number of items"
+          },
+          "per_page": {
+            "type": "integer",
+            "example": 15,
+            "description": "Items per page"
+          },
+          "current_page": {
+            "type": "integer",
+            "example": 1,
+            "description": "Current page number"
+          },
+          "last_page": {
+            "type": "integer",
+            "example": 7,
+            "description": "Last page number"
+          },
+          "next_page_url": {
+            "type": "string",
+            "nullable": true,
+            "example": "http://localhost:8000/api/products?page=2",
+            "description": "URL for next page"
+          },
+          "prev_page_url": {
+            "type": "string",
+            "nullable": true,
+            "example": null,
+            "description": "URL for previous page"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "An error occurred"
+          },
+          "data": {
+            "type": "null",
+            "example": null
+          }
+        }
+      }
+    },
+    "responses": {
+      "Unauthorized": {
+        "description": "Unauthorized - Invalid or missing authentication token",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Unauthenticated"
+                }
+              }
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Resource not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Product not found"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ValidationError": {
+        "description": "Validation error - Invalid input data",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Validation failed"
+                },
+                "errors": {
+                  "type": "object",
+                  "example": {
+                    "email": ["The email field is required."],
+                    "password": ["The password must be at least 8 characters."]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "TooManyRequests": {
+        "description": "Rate limit exceeded",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Too many requests. Please try again later."
+                },
+                "retry_after": {
+                  "type": "integer",
+                  "example": 60,
+                  "description": "Seconds until rate limit resets"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ServerError": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Failed to retrieve products"
+                }
+              }
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "Bad request - Invalid parameters",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Registration failed"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "Sanctum",
+        "description": "Laravel Sanctum bearer token authentication. Include the token in the Authorization header as 'Bearer {token}'"
+      }
+    }
+  },
+  "security": [],
+  "x-rate-limits": {
+    "auth": {
+      "description": "Rate limit for authentication endpoints",
+      "limit": 10,
+      "window": "1 minute"
+    },
+    "products": {
+      "description": "Rate limit for product endpoints",
+      "limit": 60,
+      "window": "1 minute"
+    },
+    "api": {
+      "description": "Rate limit for general API endpoints",
+      "limit": 60,
+      "window": "1 minute"
+    },
+    "wishlist": {
+      "description": "Rate limit for wishlist endpoints",
+      "limit": 30,
+      "window": "1 minute"
+    }
+  }
+}
