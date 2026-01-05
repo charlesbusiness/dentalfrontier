@@ -13,11 +13,9 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
     protected $productService;
-    protected $wishlistService;
-    public function __construct(ProductService $productService, WishlistService $wishlistService)
+    public function __construct(ProductService $productService)
     {
         $this->productService = $productService;
-        $this->wishlistService = $wishlistService;
     }
     /**
      * Display a listing of all products.
@@ -58,11 +56,6 @@ class ProductController extends Controller
     public function deleteProduct($id)
     {
         return $this->productService->deleteProduct($id);
-    }
-
-    public function addProductToWishlist(CreateWishlistRequest $request)
-    {
-        return $this->wishlistService->addProductToWishlist($request);
     }
 
 }
