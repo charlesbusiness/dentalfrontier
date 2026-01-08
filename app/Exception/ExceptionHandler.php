@@ -84,7 +84,12 @@ class ExceptionHandler extends Exception
         }
 
         try {
-            Log::error($exception);
+            // Don't log full stack traces for expected authentication errors
+            if ($exception instanceof AuthenticationException) {
+                Log::info('Authentication failed: ' . $exception->getMessage());
+            } else {
+                Log::error($exception);
+            }
         } catch (Throwable $e) {
             Log::error($e);
         }
