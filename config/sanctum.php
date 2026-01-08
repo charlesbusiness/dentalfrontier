@@ -9,7 +9,7 @@ return [
         Sanctum::currentApplicationUrlWithPort()
     ))),
     'guard' => ['web'],
-    'expiration' => null,
+    'expiration' => 60,
     'token_prefix' => env('SANCTUM_TOKEN_PREFIX', ''),
     'middleware' => [
         'authenticate_session' => Laravel\Sanctum\Http\Middleware\AuthenticateSession::class,

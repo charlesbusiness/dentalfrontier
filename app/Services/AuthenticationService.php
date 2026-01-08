@@ -52,6 +52,9 @@ class AuthenticationService
                 ], 400);
             }
 
+            // Revoke all existing tokens before creating a new one
+            $user->tokens()->delete();
+
             $token = $user->createToken('auth_token')->plainTextToken;
             $user->token = $token;
             $user->token_type = 'Bearer';
